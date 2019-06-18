@@ -2,7 +2,7 @@
 
 # Start MongoDB if not already running
 if ! pgrep mongod > /dev/null ; then
-   mongod --dbpath ./results --logpath ./results/log/mongodb.log &
+   mongod --dbpath ./results --logpath ./results/log/mongodb.log > /dev/null &
 fi
 
 python3 bin/parse_instances.py
@@ -17,3 +17,9 @@ for ((n=0;n<${num_benches};n++)); do
 done
 
 python3 bin/analyze.py
+
+# Kill MongoDB if running
+if pgrep mongod > /dev/null ; then
+   mongo_process=$(pgrep mongod)
+   kill ${mongo_process}
+fi
